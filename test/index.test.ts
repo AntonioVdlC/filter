@@ -108,6 +108,21 @@ describe("equal", () => {
     expect(actual).toEqual(expected);
   });
 
+  describe("equal().not", () => {
+    it("is a function", () => {
+      expect(typeof equal("").not).toBe("function");
+    });
+
+    it("filters for values that are notequal to the provided value", () => {
+      const arr = ["hello", 0, null, "", 22, 0];
+
+      const expected = ["hello", null, "", 22];
+      const actual = arr.filter(equal<number | string | null>(0).not);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
   describe("equal().on", () => {
     it("is a function", () => {
       expect(typeof equal("").on).toBe("function");
@@ -130,6 +145,32 @@ describe("equal", () => {
       const actual = arr.filter(equal("Bob").on("name"));
 
       expect(actual).toEqual(expected);
+    });
+
+    describe("equal().on().not", () => {
+      it("is a function", () => {
+        expect(typeof equal("").on("").not).toBe("function");
+      });
+
+      it("filters for values that are not equal to the provided value", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 60 },
+          { name: "Candice" },
+        ];
+
+        const expected = [
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 60 },
+          { name: "Candice" },
+        ];
+        const actual = arr.filter(equal("Bob").on("name").not);
+
+        expect(actual).toEqual(expected);
+      });
     });
   });
 });
