@@ -41,8 +41,8 @@ hasValue.on = function <T>(key: string) {
 function createFilterCompareFunction(
   compareFn: <T>(item: T | null, value: T) => boolean
 ) {
-  return function <T>(value: T) {
-    function fn(item: T | null): boolean {
+  return function <T, V>(value: V) {
+    function fn(item: T | V | null): boolean {
       return compareFn(item, value);
     }
 
@@ -58,7 +58,7 @@ function createFilterCompareFunction(
       return on;
     };
 
-    fn.not = function (item: T | null): boolean {
+    fn.not = function (item: T | V | null): boolean {
       return !compareFn(item, value);
     };
 
@@ -71,5 +71,13 @@ const equal = createFilterCompareFunction((item, value) => {
   return item === value;
 });
 
+const match = createFilterCompareFunction((item, value) => {
+  if (!(value instanceof RegExp)) {
+    throw new Error("Error");
+  }
+
+  return value.test(String(item));
+});
+
 export { notNull, hasValue };
-export { equal };
+export { equal, match };
