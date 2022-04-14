@@ -1,6 +1,15 @@
 import { describe, it, expect } from "vitest";
 
-import { notNull, hasValue, equal, match } from "../src";
+import {
+  notNull,
+  hasValue,
+  equal,
+  lesserThan,
+  lesserThanOrEqual,
+  greaterThan,
+  greaterThanOrEqual,
+  match,
+} from "../src";
 
 describe("notNull", () => {
   it("is a function", () => {
@@ -172,6 +181,454 @@ describe("equal", () => {
           { name: "Candice" },
         ];
         const actual = arr.filter(equal("Bob").on("name").not);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+  });
+});
+
+describe("lesserThan", () => {
+  it("is a function", () => {
+    expect(typeof lesserThan).toBe("function");
+  });
+
+  it("returns a function", () => {
+    expect(typeof lesserThan("")).toBe("function");
+  });
+
+  it("filters for values that are lesser than the provided value", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [0, 0];
+    const actual = arr.filter(lesserThan(10));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("filters for values that are lesser than the provided value (dates)", () => {
+    const arr = [
+      new Date("2020-02-02"),
+      new Date("1999-01-01"),
+      new Date("1970-12-12"),
+      new Date("2022-02-22"),
+    ];
+
+    const expected = [new Date("1999-01-01"), new Date("1970-12-12")];
+    const actual = arr.filter(lesserThan(new Date("2000-01-01")));
+
+    expect(actual).toEqual(expected);
+  });
+
+  describe("lesserThan().not", () => {
+    it("is a function", () => {
+      expect(typeof lesserThan("").not).toBe("function");
+    });
+
+    it("filters for values that are not lesser than the provided value", () => {
+      const arr = ["hello", 0, null, "", 22, 0];
+
+      const expected = ["hello", null, "", 22];
+      const actual = arr.filter(lesserThan(10).not);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it("filters for values that are not lesser than the provided value (dates)", () => {
+      const arr = [
+        new Date("2020-02-02"),
+        new Date("1999-01-01"),
+        new Date("1970-12-12"),
+        new Date("2022-02-22"),
+      ];
+
+      const expected = [new Date("2020-02-02"), new Date("2022-02-22")];
+      const actual = arr.filter(lesserThan(new Date("2000-01-01")).not);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe("lesserThan().on", () => {
+    it("is a function", () => {
+      expect(typeof lesserThan("").on).toBe("function");
+    });
+
+    it("returns a function", () => {
+      expect(typeof lesserThan("").on("")).toBe("function");
+    });
+
+    it("filters for values that are lesser than the provided value", () => {
+      const arr = [
+        { name: "Bob", age: 23 },
+        { name: "Alice", age: 32 },
+        null,
+        { name: "Tom", age: 60 },
+        { name: "Candice" },
+      ];
+
+      const expected = [{ name: "Bob", age: 23 }];
+      const actual = arr.filter(lesserThan(32).on("age"));
+
+      expect(actual).toEqual(expected);
+    });
+
+    describe("lesserThan().on().not", () => {
+      it("is a function", () => {
+        expect(typeof lesserThan("").on("").not).toBe("function");
+      });
+
+      it("filters for values that are not lesser than the provided value", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 60 },
+          { name: "Candice" },
+        ];
+
+        const expected = [null, { name: "Tom", age: 60 }, { name: "Candice" }];
+        const actual = arr.filter(lesserThan(40).on("age").not);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+  });
+});
+
+describe("lesserThanOrEqual", () => {
+  it("is a function", () => {
+    expect(typeof lesserThanOrEqual).toBe("function");
+  });
+
+  it("returns a function", () => {
+    expect(typeof lesserThanOrEqual("")).toBe("function");
+  });
+
+  it("filters for values that are lesser than or equal to the provided value", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [0, 0];
+    const actual = arr.filter(lesserThanOrEqual(10));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("filters for values that are lesser than or equal to the provided value (dates)", () => {
+    const arr = [
+      new Date("2020-02-02"),
+      new Date("1999-01-01"),
+      new Date("1970-12-12"),
+      new Date("2022-02-22"),
+    ];
+
+    const expected = [new Date("1999-01-01"), new Date("1970-12-12")];
+    const actual = arr.filter(lesserThanOrEqual(new Date("2000-01-01")));
+
+    expect(actual).toEqual(expected);
+  });
+
+  describe("lesserThanOrEqual().not", () => {
+    it("is a function", () => {
+      expect(typeof lesserThanOrEqual("").not).toBe("function");
+    });
+
+    it("filters for values that are not lesser than or equal to the provided value", () => {
+      const arr = ["hello", 0, null, "", 22, 0];
+
+      const expected = ["hello", null, "", 22];
+      const actual = arr.filter(lesserThanOrEqual(10).not);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it("filters for values that are not lesser than or equal to the provided value (dates)", () => {
+      const arr = [
+        new Date("2020-02-02"),
+        new Date("1999-01-01"),
+        new Date("1970-12-12"),
+        new Date("2022-02-22"),
+      ];
+
+      const expected = [new Date("2020-02-02"), new Date("2022-02-22")];
+      const actual = arr.filter(lesserThanOrEqual(new Date("2000-01-01")).not);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe("lesserThanOrEqual().on", () => {
+    it("is a function", () => {
+      expect(typeof lesserThanOrEqual("").on).toBe("function");
+    });
+
+    it("returns a function", () => {
+      expect(typeof lesserThanOrEqual("").on("")).toBe("function");
+    });
+
+    it("filters for values that are lesser than or equal to the provided value", () => {
+      const arr = [
+        { name: "Bob", age: 23 },
+        { name: "Alice", age: 32 },
+        null,
+        { name: "Tom", age: 60 },
+        { name: "Candice" },
+      ];
+
+      const expected = [
+        { name: "Bob", age: 23 },
+        { name: "Alice", age: 32 },
+      ];
+      const actual = arr.filter(lesserThanOrEqual(32).on("age"));
+
+      expect(actual).toEqual(expected);
+    });
+
+    describe("lesserThanOrEqual().on().not", () => {
+      it("is a function", () => {
+        expect(typeof lesserThanOrEqual("").on("").not).toBe("function");
+      });
+
+      it("filters for values that are not lesser than or equal to the provided value", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 60 },
+          { name: "Candice" },
+        ];
+
+        const expected = [null, { name: "Tom", age: 60 }, { name: "Candice" }];
+        const actual = arr.filter(lesserThanOrEqual(40).on("age").not);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+  });
+});
+
+describe("greaterThan", () => {
+  it("is a function", () => {
+    expect(typeof greaterThan).toBe("function");
+  });
+
+  it("returns a function", () => {
+    expect(typeof greaterThan("")).toBe("function");
+  });
+
+  it("filters for values that are greater than the provided value", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [22];
+    const actual = arr.filter(greaterThan(10));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("filters for values that are greater than the provided value (dates)", () => {
+    const arr = [
+      new Date("2020-02-02"),
+      new Date("1999-01-01"),
+      new Date("1970-12-12"),
+      new Date("2022-02-22"),
+    ];
+
+    const expected = [new Date("2020-02-02"), new Date("2022-02-22")];
+    const actual = arr.filter(greaterThan(new Date("2000-01-01")));
+
+    expect(actual).toEqual(expected);
+  });
+
+  describe("greaterThan().not", () => {
+    it("is a function", () => {
+      expect(typeof greaterThan("").not).toBe("function");
+    });
+
+    it("filters for values that are not greater than the provided value", () => {
+      const arr = ["hello", 0, null, "", 22, 0];
+
+      const expected = ["hello", 0, null, "", 0];
+      const actual = arr.filter(greaterThan(10).not);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it("filters for values that are not greater than the provided value (dates)", () => {
+      const arr = [
+        new Date("2020-02-02"),
+        new Date("1999-01-01"),
+        new Date("1970-12-12"),
+        new Date("2022-02-22"),
+      ];
+
+      const expected = [new Date("1999-01-01"), new Date("1970-12-12")];
+      const actual = arr.filter(greaterThan(new Date("2000-01-01")).not);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe("greaterThan().on", () => {
+    it("is a function", () => {
+      expect(typeof greaterThan("").on).toBe("function");
+    });
+
+    it("returns a function", () => {
+      expect(typeof greaterThan("").on("")).toBe("function");
+    });
+
+    it("filters for values that are greater than the provided value", () => {
+      const arr = [
+        { name: "Bob", age: 23 },
+        { name: "Alice", age: 32 },
+        null,
+        { name: "Tom", age: 60 },
+        { name: "Candice" },
+      ];
+
+      const expected = [{ name: "Tom", age: 60 }];
+      const actual = arr.filter(greaterThan(32).on("age"));
+
+      expect(actual).toEqual(expected);
+    });
+
+    describe("greaterThan().on().not", () => {
+      it("is a function", () => {
+        expect(typeof greaterThan("").on("").not).toBe("function");
+      });
+
+      it("filters for values that are not greater than the provided value", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 60 },
+          { name: "Candice" },
+        ];
+
+        const expected = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Candice" },
+        ];
+        const actual = arr.filter(greaterThan(40).on("age").not);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+  });
+});
+
+describe("greaterThanOrEqual", () => {
+  it("is a function", () => {
+    expect(typeof greaterThanOrEqual).toBe("function");
+  });
+
+  it("returns a function", () => {
+    expect(typeof greaterThanOrEqual("")).toBe("function");
+  });
+
+  it("filters for values that are greater than or equal to the provided value", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [22];
+    const actual = arr.filter(greaterThanOrEqual(10));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("filters for values that are greater than or equal to the provided value (dates)", () => {
+    const arr = [
+      new Date("2020-02-02"),
+      new Date("1999-01-01"),
+      new Date("1970-12-12"),
+      new Date("2022-02-22"),
+    ];
+
+    const expected = [new Date("2020-02-02"), new Date("2022-02-22")];
+    const actual = arr.filter(greaterThanOrEqual(new Date("2000-01-01")));
+
+    expect(actual).toEqual(expected);
+  });
+
+  describe("greaterThanOrEqual().not", () => {
+    it("is a function", () => {
+      expect(typeof greaterThanOrEqual("").not).toBe("function");
+    });
+
+    it("filters for values that are not greater than or equal to the provided value", () => {
+      const arr = ["hello", 0, null, "", 22, 0];
+
+      const expected = ["hello", 0, null, "", 0];
+      const actual = arr.filter(greaterThanOrEqual(10).not);
+
+      expect(actual).toEqual(expected);
+    });
+
+    it("filters for values that are not greater than or equal to the provided value (dates)", () => {
+      const arr = [
+        new Date("2020-02-02"),
+        new Date("1999-01-01"),
+        new Date("1970-12-12"),
+        new Date("2022-02-22"),
+      ];
+
+      const expected = [new Date("1999-01-01"), new Date("1970-12-12")];
+      const actual = arr.filter(greaterThanOrEqual(new Date("2000-01-01")).not);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe("greaterThanOrEqual().on", () => {
+    it("is a function", () => {
+      expect(typeof greaterThanOrEqual("").on).toBe("function");
+    });
+
+    it("returns a function", () => {
+      expect(typeof greaterThanOrEqual("").on("")).toBe("function");
+    });
+
+    it("filters for values that are greater than or equal to the provided value", () => {
+      const arr = [
+        { name: "Bob", age: 23 },
+        { name: "Alice", age: 32 },
+        null,
+        { name: "Tom", age: 60 },
+        { name: "Candice" },
+      ];
+
+      const expected = [
+        { name: "Alice", age: 32 },
+        { name: "Tom", age: 60 },
+      ];
+      const actual = arr.filter(greaterThanOrEqual(32).on("age"));
+
+      expect(actual).toEqual(expected);
+    });
+
+    describe("greaterThanOrEqual().on().not", () => {
+      it("is a function", () => {
+        expect(typeof greaterThanOrEqual("").on("").not).toBe("function");
+      });
+
+      it("filters for values that are not greater than or equal to the provided value", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 60 },
+          { name: "Candice" },
+        ];
+
+        const expected = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Candice" },
+        ];
+        const actual = arr.filter(greaterThanOrEqual(40).on("age").not);
 
         expect(actual).toEqual(expected);
       });
