@@ -9,6 +9,7 @@ import {
   greaterThan,
   greaterThanOrEqual,
   match,
+  createFilterCompareFunction,
 } from "../src";
 
 describe("notNull", () => {
@@ -16,13 +17,28 @@ describe("notNull", () => {
     expect(typeof notNull).toBe("function");
   });
 
-  it("filters items that are falsy (except 0)", () => {
+  it("filters items that are null", () => {
     const arr = ["hello", 0, null, "", 22];
 
     const expected = ["hello", 0, "", 22];
     const actual = arr.filter(notNull);
 
     expect(actual).toEqual(expected);
+  });
+
+  describe("notNull.not", () => {
+    it("is a function", () => {
+      expect(typeof notNull.not).toBe("function");
+    });
+
+    it("filters items that are not null", () => {
+      const arr = ["hello", 0, null, "", 22];
+
+      const expected = [null];
+      const actual = arr.filter(notNull.not);
+
+      expect(actual).toEqual(expected);
+    });
   });
 
   describe("notNull.on", () => {
@@ -34,7 +50,7 @@ describe("notNull", () => {
       expect(typeof notNull.on("")).toBe("function");
     });
 
-    it("filters items that are falsy (except 0)", () => {
+    it("filters items that are null", () => {
       const arr = [
         { name: "Bob", age: 23 },
         { name: "Alice", age: 32 },
@@ -52,6 +68,27 @@ describe("notNull", () => {
 
       expect(actual).toEqual(expected);
     });
+
+    describe("notNull.on().not", () => {
+      it("is a function", () => {
+        expect(typeof notNull.on("").not).toBe("function");
+      });
+
+      it("filters items that are not null", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 0 },
+          { name: "Candice" },
+        ];
+
+        const expected = [null, { name: "Candice" }];
+        const actual = arr.filter(notNull.on("age").not);
+
+        expect(actual).toEqual(expected);
+      });
+    });
   });
 });
 
@@ -67,6 +104,21 @@ describe("hasValue", () => {
     const actual = arr.filter(hasValue);
 
     expect(actual).toEqual(expected);
+  });
+
+  describe("hasValue.not", () => {
+    it("is a function", () => {
+      expect(typeof hasValue.not).toBe("function");
+    });
+
+    it("filters items that are not falsy (except 0)", () => {
+      const arr = ["hello", 0, null, "", 22];
+
+      const expected = [null, ""];
+      const actual = arr.filter(hasValue.not);
+
+      expect(actual).toEqual(expected);
+    });
   });
 
   describe("hasValue.on", () => {
@@ -95,6 +147,27 @@ describe("hasValue", () => {
       const actual = arr.filter(hasValue.on("age"));
 
       expect(actual).toEqual(expected);
+    });
+
+    describe("hasValue.on().not", () => {
+      it("is a function", () => {
+        expect(typeof hasValue.on("").not).toBe("function");
+      });
+
+      it("filters items that are falsy (except 0)", () => {
+        const arr = [
+          { name: "Bob", age: 23 },
+          { name: "Alice", age: 32 },
+          null,
+          { name: "Tom", age: 0 },
+          { name: "Candice" },
+        ];
+
+        const expected = [null, { name: "Candice" }];
+        const actual = arr.filter(hasValue.on("age").not);
+
+        expect(actual).toEqual(expected);
+      });
     });
   });
 });
@@ -723,5 +796,41 @@ describe("match", () => {
         expect(actual).toEqual(expected);
       });
     });
+  });
+});
+
+describe("createFilterCompareFunction", () => {
+  it("is a function", () => {
+    expect(typeof createFilterCompareFunction).toBe("function");
+  });
+
+  it("returns a function", () => {
+    expect(typeof createFilterCompareFunction(() => false)).toBe("function");
+  });
+
+  it("creates a working filter compare function", () => {
+    const hasValueEqualTo = createFilterCompareFunction(
+      (item, value) => item != null && item === value
+    );
+
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [0, 0];
+    const actual = arr.filter(hasValueEqualTo(0));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("creates a working filter compare function (with params)", () => {
+    const isHello = createFilterCompareFunction(
+      (item, value) => item === value
+    )("hello");
+
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = ["hello"];
+    const actual = arr.filter(isHello);
+
+    expect(actual).toEqual(expected);
   });
 });
