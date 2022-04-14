@@ -1,5 +1,7 @@
 import getValueByKey from "get-value-key";
 
+import isDateOrNumber from "./utils/is-date-or-number";
+
 /**
  *
  * @param compareFn
@@ -87,7 +89,7 @@ const equal = createFilterCompareFunction((item, value) => {
  *
  */
 const lesserThan = createFilterCompareFunction((item, value) => {
-  if (item instanceof Date || typeof item === "number") {
+  if (item != null && isDateOrNumber(item)) {
     return item < value;
   }
   return false;
@@ -97,7 +99,7 @@ const lesserThan = createFilterCompareFunction((item, value) => {
  *
  */
 const lesserThanOrEqual = createFilterCompareFunction((item, value) => {
-  if (item instanceof Date || typeof item === "number") {
+  if (item != null && isDateOrNumber(item)) {
     return item <= value;
   }
   return false;
@@ -107,7 +109,7 @@ const lesserThanOrEqual = createFilterCompareFunction((item, value) => {
  *
  */
 const greaterThan = createFilterCompareFunction((item, value) => {
-  if (item instanceof Date || typeof item === "number") {
+  if (item != null && isDateOrNumber(item)) {
     return item > value;
   }
   return false;
@@ -117,7 +119,7 @@ const greaterThan = createFilterCompareFunction((item, value) => {
  *
  */
 const greaterThanOrEqual = createFilterCompareFunction((item, value) => {
-  if (item instanceof Date || typeof item === "number") {
+  if (item != null && isDateOrNumber(item)) {
     return item >= value;
   }
   return false;
