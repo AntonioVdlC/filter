@@ -8,7 +8,9 @@
   "files": [
     "dist/index.cjs.js",
     "dist/index.esm.js",
-    "dist/index.d.ts"
+    "dist/index.d.ts",
+    "dist/create-filter-compare-function.d.ts",
+    "dist/utils/is-date-or-number.d.ts"
   ],
   "scripts": {
     "prepare": "husky install",
