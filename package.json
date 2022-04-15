@@ -10,7 +10,7 @@
     "dist/index.esm.js",
     "dist/index.d.ts",
     "dist/combine.d.ts",
-    "dist/create-filter-compare-function.d.ts",
+    "dist/create-filter-function.d.ts",
     "dist/utils/is-date-or-number.d.ts"
   ],
   "scripts": {
@@ -22,7 +22,7 @@
     "pre-commit": "lint-staged",
     "prebuild": "rimraf dist && mkdir dist",
     "build": "npm run build:types && npm run build:lib",
-    "build:types": "tsc src/*.ts --declaration --emitDeclarationOnly --outDir dist",
+    "build:types": "tsc src/*.ts --declaration --emitDeclarationOnly --esModuleInterop --outDir dist",
     "build:lib": "rollup -c",
     "postversion": "git push && git push --tags"
   },
@@ -58,6 +58,8 @@
     "vitest": "^0.9.3"
   },
   "dependencies": {
-    "get-value-key": "^0.1.2"
+    "@types/lodash.isequal": "^4.5.5",
+    "get-value-key": "^0.1.2",
+    "lodash.isequal": "^4.5.0"
   }
 }

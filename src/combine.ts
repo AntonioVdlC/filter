@@ -6,9 +6,9 @@ type Filter = {
 };
 
 /**
- *
- * @param item
- * @param filter
+ * Recursively apply filters on a given item
+ * @param item Item to test for filtering functions
+ * @param filter Either a filter or a filter function
  * @returns
  */
 function applyFilters<T>(item: T, filter: Filter | FilterFunction): boolean {
@@ -34,9 +34,9 @@ function applyFilters<T>(item: T, filter: Filter | FilterFunction): boolean {
 }
 
 /**
- *
- * @param filter
- * @returns
+ * Combines multiple filtering functions
+ * @param filter A filter or filter function
+ * @returns A filter functions (to be used in Array#filter())
  *
  * Examples:
  *

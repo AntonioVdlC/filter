@@ -1,32 +1,34 @@
+import isEqual from "lodash.isequal";
+
 import isDateOrNumber from "./utils/is-date-or-number";
 
-import createFilterCompareFunction from "./create-filter-compare-function";
+import createFilterFunction from "./create-filter-function";
 import combine from "./combine";
 
 /**
- *
+ * Removes items that are `null`.
  */
-const notNull = createFilterCompareFunction((item) => item != null)();
+const notNull = createFilterFunction((item) => item != null)();
 
 /**
- *
+ * Removes falsy values from an array (except 0).
  */
-const hasValue = createFilterCompareFunction(
+const hasValue = createFilterFunction(
   (item) => Boolean(item) || (typeof item === "number" && item === 0)
 )();
 
 /**
- *
+ * Keeps all values that are equal to `value`.
+ * Uses lodash.isequal (https://www.npmjs.com/package/lodash.isequal)
  */
-const equal = createFilterCompareFunction((item, value) => {
-  // TODO: add deep equality for non-primitive types
-  return item === value;
+const equal = createFilterFunction((item, value) => {
+  return isEqual(item, value);
 });
 
 /**
- *
+ * Filters on number or date stricly lesser than the `value`.
  */
-const lesserThan = createFilterCompareFunction((item, value) => {
+const lesserThan = createFilterFunction((item, value) => {
   if (item != null && isDateOrNumber(item)) {
     return item < value;
   }
@@ -34,9 +36,9 @@ const lesserThan = createFilterCompareFunction((item, value) => {
 });
 
 /**
- *
+ * Filters on number or date stricly lesser or equal than the `value`.
  */
-const lesserThanOrEqual = createFilterCompareFunction((item, value) => {
+const lesserThanOrEqual = createFilterFunction((item, value) => {
   if (item != null && isDateOrNumber(item)) {
     return item <= value;
   }
@@ -44,9 +46,9 @@ const lesserThanOrEqual = createFilterCompareFunction((item, value) => {
 });
 
 /**
- *
+ * Filters on number or date stricly greater than the `value`.
  */
-const greaterThan = createFilterCompareFunction((item, value) => {
+const greaterThan = createFilterFunction((item, value) => {
   if (item != null && isDateOrNumber(item)) {
     return item > value;
   }
@@ -54,9 +56,9 @@ const greaterThan = createFilterCompareFunction((item, value) => {
 });
 
 /**
- *
+ * Filters on number or date greater or equal than the `value`.
  */
-const greaterThanOrEqual = createFilterCompareFunction((item, value) => {
+const greaterThanOrEqual = createFilterFunction((item, value) => {
   if (item != null && isDateOrNumber(item)) {
     return item >= value;
   }
@@ -64,9 +66,9 @@ const greaterThanOrEqual = createFilterCompareFunction((item, value) => {
 });
 
 /**
- *
+ * Keeps all values that match the provided `value` pattern.
  */
-const match = createFilterCompareFunction((item, value) => {
+const match = createFilterFunction((item, value) => {
   if (!(value instanceof RegExp)) {
     throw new Error(
       `Error: cannot match again pattern "${value}". Not a regular expression.`
@@ -84,4 +86,4 @@ export {
   greaterThanOrEqual,
   match,
 };
-export { createFilterCompareFunction, combine };
+export { createFilterFunction, combine };

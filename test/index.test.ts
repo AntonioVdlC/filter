@@ -9,7 +9,7 @@ import {
   greaterThan,
   greaterThanOrEqual,
   match,
-  createFilterCompareFunction,
+  createFilterFunction,
   combine,
 } from "../src";
 
@@ -800,17 +800,17 @@ describe("match", () => {
   });
 });
 
-describe("createFilterCompareFunction", () => {
+describe("createFilterFunction", () => {
   it("is a function", () => {
-    expect(typeof createFilterCompareFunction).toBe("function");
+    expect(typeof createFilterFunction).toBe("function");
   });
 
   it("returns a function", () => {
-    expect(typeof createFilterCompareFunction(() => false)).toBe("function");
+    expect(typeof createFilterFunction(() => false)).toBe("function");
   });
 
   it("creates a working filter compare function", () => {
-    const hasValueEqualTo = createFilterCompareFunction(
+    const hasValueEqualTo = createFilterFunction(
       (item, value) => item != null && item === value
     );
 
@@ -823,9 +823,9 @@ describe("createFilterCompareFunction", () => {
   });
 
   it("creates a working filter compare function (with params)", () => {
-    const isHello = createFilterCompareFunction(
-      (item, value) => item === value
-    )("hello");
+    const isHello = createFilterFunction((item, value) => item === value)(
+      "hello"
+    );
 
     const arr = ["hello", 0, null, "", 22, 0];
 
@@ -883,6 +883,41 @@ describe("combine", () => {
             ],
           },
           equal("hello"),
+        ],
+      })
+    );
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("applies multiple fitlers (array of objects)", () => {
+    const arr = [
+      { name: "Bob", age: 23 },
+      { name: "Alice", age: 32 },
+      { name: "Tom", age: 60 },
+      { name: "Candice", age: 45 },
+      { name: "Alice", age: 28 },
+    ];
+
+    const expected = [
+      { name: "Alice", age: 32 },
+      { name: "Candice", age: 45 },
+    ];
+    const actual = arr.filter(
+      combine({
+        operator: "and",
+        filters: [
+          match(/ice$/).on("name"),
+          {
+            operator: "or",
+            filters: [
+              {
+                operator: "and",
+                filters: [lesserThan(40).on("age"), greaterThan(30).on("age")],
+              },
+              equal(45).on("age"),
+            ],
+          },
         ],
       })
     );
