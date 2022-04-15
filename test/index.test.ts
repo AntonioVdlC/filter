@@ -10,6 +10,7 @@ import {
   greaterThanOrEqual,
   match,
   createFilterCompareFunction,
+  combine,
 } from "../src";
 
 describe("notNull", () => {
@@ -830,6 +831,61 @@ describe("createFilterCompareFunction", () => {
 
     const expected = ["hello"];
     const actual = arr.filter(isHello);
+
+    expect(actual).toEqual(expected);
+  });
+});
+
+describe("combine", () => {
+  it("is a function", () => {
+    expect(typeof combine).toBe("function");
+  });
+
+  it("returns a function", () => {
+    // @ts-expect-error
+    expect(typeof combine()).toBe("function");
+  });
+
+  it("applies a single filter", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [0, 22, 0];
+    const actual = arr.filter(combine(match(/[0-9]+/)));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("applies multiple filters (simple)", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = [0, 0];
+    const actual = arr.filter(
+      combine({ operator: "and", filters: [match(/[0-9]+/), lesserThan(5)] })
+    );
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("applies multiple filters (complex)", () => {
+    const arr = ["hello", 0, null, "", 22, 0];
+
+    const expected = ["hello", 0, 22, 0];
+    const actual = arr.filter(
+      combine({
+        operator: "or",
+        filters: [
+          match(/[0-9]+/),
+          {
+            operator: "and",
+            filters: [
+              lesserThan(5),
+              { operator: "or", filters: [notNull, equal("")] },
+            ],
+          },
+          equal("hello"),
+        ],
+      })
+    );
 
     expect(actual).toEqual(expected);
   });

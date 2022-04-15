@@ -1,5 +1,7 @@
 import isDateOrNumber from "./utils/is-date-or-number";
+
 import createFilterCompareFunction from "./create-filter-compare-function";
+import combine from "./combine";
 
 /**
  *
@@ -82,4 +84,4 @@ export {
   greaterThanOrEqual,
   match,
 };
-export { createFilterCompareFunction };
+export { createFilterCompareFunction, combine };

@@ -9,6 +9,7 @@
     "dist/index.cjs.js",
     "dist/index.esm.js",
     "dist/index.d.ts",
+    "dist/combine.d.ts",
     "dist/create-filter-compare-function.d.ts",
     "dist/utils/is-date-or-number.d.ts"
   ],
@@ -27,7 +28,8 @@
   },
   "keywords": [
     "array",
-    "filter"
+    "filter",
+    "combine"
   ],
   "author": "Antonio Villagra De La Cruz",
   "repository": {
