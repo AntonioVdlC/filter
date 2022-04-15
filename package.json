@@ -1,6 +1,6 @@
 {
   "name": "@antoniovdlc/filter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Custom filter functions for arrays",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
